@@ -1,10 +1,11 @@
-<circuit>
-    <node id="N1" x="100" y="100"/>
-    <node id="N2" x="200" y="100"/>
-    <node id="N3" x="200" y="200"/>
-    <node id="N4" x="100" y="200"/>
-    <resistor id="R1" node1="N1" node2="N2" resistance="10"/>
-    <inductor id="L1" node1="N2" node2="N3" inductance="0.1"/>
-    <capacitor id="C1" node1="N3" node2="N4" capacitance="1e-6"/>
-    <voltagesource id="V1" node1="N4" node2="N1" voltage="5"/>
-</circuit>
+<circuits>
+    <node id="n1" x="100" y="100"/>
+    <node id="n2" x="300" y="100"/>
+    <node id="n3" x="300" y="300"/>
+    <node id="n4" x="100" y="300"/>
+
+    <resistor id="R1" from="n1" to="n2"/>
+    <capacitor id="C1" from="n2" to="n3"/>
+    <inductor id="L1" from="n3" to="n4"/>
+    <voltagesource id="V1" from="n4" to="n1"/>
+</circuits>

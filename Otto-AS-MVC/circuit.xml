@@ -1,0 +1,5 @@
+<node id="0" x="50" y="100"/>
+<node id="1" x="200" y="100"/>
+<node id="2" x="350" y="100"/>
+<resistor id="R1" nodes="0 1" value="100"/>
+<capacitor id="C1" nodes="1 2" value="1e-6"/>

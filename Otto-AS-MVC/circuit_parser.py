@@ -1,36 +1,28 @@
-import re
-from PyQt5.QtCore import QPointF
-from components import ResistorItem, CapacitorItem, InductorItem, VoltageSourceItem
+import xml.etree.ElementTree as ET
 
 class CircuitParser:
-    def __init__(self, scene):
-        self.scene = scene
+    def __init__(self, filename):
+        self.filename = filename
         self.nodes = {}
+        self.elements = []
 
-    def parse_file(self, file_path):
-        with open(file_path, 'r') as f:
-            content = f.read()
+    def parse(self):  # <--- THIS is the method you’re missing!
+        tree = ET.parse(self.filename)
+        root = tree.getroot()
 
-        # Parse nodes
-        node_matches = re.findall(r'<node name="(.*?)" x="(.*?)" y="(.*?)"/>', content)
-        for name, x, y in node_matches:
-            point = QPointF(float(x), float(y))
-            self.nodes[name] = point
+        for node in root.findall('node'):
+            node_id = node.get('id')
+            x = int(node.get('x'))
+            y = int(node.get('y'))
+            self.nodes[node_id] = (x, y)
 
-        # Parse components
-        element_types = {
-            'resistor': ResistorItem,
-            'capacitor': CapacitorItem,
-            'inductor': InductorItem,
-            'voltage_source': VoltageSourceItem
-        }
+        for tag in ['resistor', 'capacitor', 'inductor', 'voltagesource']:
+            for elem in root.findall(tag):
+                self.elements.append({
+                    'type': tag,
+                    'id': elem.get('id'),
+                    'from': elem.get('from'),
+                    'to': elem.get('to')
+                })
 
-        for tag, cls in element_types.items():
-            pattern = fr'<{tag} name=".*?" node1="(.*?)" node2="(.*?)"/>'
-            for node1, node2 in re.findall(pattern, content):
-                p1 = self.nodes.get(node1)
-                p2 = self.nodes.get(node2)
-                if p1 and p2:
-                    item = cls(p1, p2)
-                    self.scene.addItem(item)
-
+        return self.nodes, self.elements
